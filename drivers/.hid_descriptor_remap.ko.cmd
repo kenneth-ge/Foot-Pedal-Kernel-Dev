@@ -1,1 +1,0 @@
-cmd_/home/kge/footpedal_git_stuff/drivers/hid_descriptor_remap.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000 -T ./scripts/module-common.lds  --build-id  -o /home/kge/footpedal_git_stuff/drivers/hid_descriptor_remap.ko /home/kge/footpedal_git_stuff/drivers/hid_descriptor_remap.o /home/kge/footpedal_git_stuff/drivers/hid_descriptor_remap.mod.o ;  true
