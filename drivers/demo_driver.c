@@ -1,3 +1,10 @@
+/* 
+ * Basic driver that will store 64 bytes of data. You can write to it
+ * to store this data, or you can read the data you put in. It will
+ * start with the text "Welcome to the world of mycorrhizae!"
+ * 
+*/
+
 #include <linux/module.h>
 #include <linux/init.h>
 
@@ -5,38 +12,79 @@
 #include <linux/device.h>
 #include <linux/kernel.h>
 #include <linux/fs.h>
+#include <linux/uaccess.h>
+
+#include <linux/string.h>
 
 // max Minor devices
 #define MAX_DEV 1
 
+static char data[64] = "Welcome to the world of mycorrhizae!\n";
+
 static int demo_open(struct inode *inode, struct file *file)
 {
-    printk(KERN_INFO "MYCHARDEV: Device open\n");
+    printk(KERN_INFO "demo driver: Device open\n");
     return 0;
 }
 
 static int demo_release(struct inode *inode, struct file *file)
 {
-    printk(KERN_INFO "MYCHARDEV: Device close\n");
+    printk(KERN_INFO "demo driver: Device close\n");
     return 0;
 }
 
 static long demo_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
-    printk(KERN_INFO "MYCHARDEV: Device ioctl\n");
+    printk(KERN_INFO "demo driver: Device ioctl\n");
     return 0;
 }
 
 static ssize_t demo_read(struct file *file, char __user *buf, size_t count, loff_t *offset)
 {
-    printk(KERN_INFO "MYCHARDEV: Device read\n");
-    return 0;
+    printk(KERN_INFO "more stuff!\n");
+    printk(KERN_INFO "demo driver: Device read\n");
+    printk(KERN_INFO "Offset: %lld\n", *offset);
+
+    // we must use copy_to_user rather than memcpy to make sure
+    // the user hasn't passed in some malicious pointer (would be really bad)
+    // if we injected some data into some random target program on
+    // this PC!
+
+    size_t data_len = min((size_t)64, strlen(data) + 1);
+
+    if(*offset >= data_len){
+        return 0;
+    }
+
+    count = min(count, (size_t)(data_len - *offset));
+
+    if(_copy_to_user(buf, data + *offset, count)){
+        return -EFAULT;
+    }
+
+    *offset += count;
+
+    return count;
 }
 
 static ssize_t demo_write(struct file *file, const char __user *buf, size_t count, loff_t *offset)
 {
-    printk(KERN_INFO "MYCHARDEV: Device write\n");
-    return 0;
+    printk(KERN_INFO "demo driver: Device write\n");
+    printk(KERN_INFO "offset: %lld count: %ld", *offset, count);
+
+    count = min(count, (size_t)(64 - *offset));
+
+    if(*offset > 64){
+        return 0;
+    }
+
+    if(copy_from_user(data + *offset, buf, count)){
+        return -EFAULT;
+    }
+
+    *offset += count;
+
+    return count;
 }
 
 // initialize file_operations

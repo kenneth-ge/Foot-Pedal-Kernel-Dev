@@ -1,0 +1,1 @@
+cmd_/home/kge/footpedal_git_stuff/drivers/demo_driver.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000 -T ./scripts/module-common.lds  --build-id  -o /home/kge/footpedal_git_stuff/drivers/demo_driver.ko /home/kge/footpedal_git_stuff/drivers/demo_driver.o /home/kge/footpedal_git_stuff/drivers/demo_driver.mod.o ;  true
