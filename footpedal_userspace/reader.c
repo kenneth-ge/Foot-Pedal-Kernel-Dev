@@ -18,14 +18,18 @@ char* strs[] = {
     "1"
 };
 
+bool current_state = false;
+
 void set_state(bool b){
     //output = fopen("/dev/shm/footpedal", "w+");
     //fprintf(output, b ? "1" : "0");
-    rewind(output);
-    fwrite(strs[b], strlen(strs[b]), 1, output);
-    fflush(output);
-    printf("flush\n");
+    if(current_state != b){
+        rewind(output);
+        fwrite(strs[b], strlen(strs[b]), 1, output);
+        fflush(output);
+    }
     //fclose(output);
+    current_state = b;
 }
 
 int main(){
@@ -75,8 +79,10 @@ int main(){
     printf("target file: %s\n", target);
     FILE* device = fopen(target, "r");
 
+    printf("writing to: /dev/shm/footpedal\n");
+
     if(device == NULL){
-        printf("Error: device is null! Make sure you are running this program in root mode (sudo).\n");
+        printf("Error: device is null! Make sure the pedal is plugged in and you are running this program in root mode (sudo).\n");
         return 0;
     }
 
@@ -101,11 +107,11 @@ int main(){
         if(curr_buf[3] == 5){
             set_state(1);
             //fprintf(output, "1");
-            printf("press\n");
+            //printf("press\n");
         }else{
             set_state(0);
             //fprintf(output, "0");
-            printf("release\n");
+            //printf("release\n");
         }
         //fclose(output);
 
