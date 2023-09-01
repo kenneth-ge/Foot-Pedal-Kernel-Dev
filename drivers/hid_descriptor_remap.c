@@ -51,10 +51,10 @@ static __u8 pedal_rdesc_fixed[] = {
     // the kernel will interpret scancodes as being 
     // shifted up by X
     // so, we shift the keycode up by 0x35 to remap the 'b'
-    // to F1
+    // to Keypad XOR (which I think is unused?)
     // see https://www.usb.org/sites/default/files/documents/hut1_12v2.pdf
-    // for keycodes
-    0x19, 0x35,        //   Usage Minimum (0x00)
+    // page 53 for keycodes
+    0x19, 0xC2 - 0x05,        //   Usage Minimum (0x00)
     0x29, 0xFF,        //   Usage Maximum (0xFF)
     0x81, 0x00,        //   Input (Data,Array,Abs,No Wrap,Linear,Preferred State,No Null Position)
     0xC0,              // End Collection
