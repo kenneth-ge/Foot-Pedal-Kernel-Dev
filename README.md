@@ -1,4 +1,6 @@
 # Foot-Pedal-Kernel-Dev
+Playing around with Linux kernel modules, and trying to change the behavior of a USB foot pedal
+
 ## footpedal_userspace
 A userspace program that reads data from the kernel (devfs), and outputs the current state of the pedal
 
