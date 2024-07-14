@@ -12,3 +12,6 @@ Basic character driver program template that allows reading and writing from its
 
 ### hid_descriptor_remap.c
 Hacks the HID descriptor for the PCSensor FootSwitch by shifting its key mapping up to 0xC2, in order to remap the 'b' key to 'KEYPAD XOR', an unused key. This allows us to read the raw HID info to detect pedal presses using demo_driver.c
+
+### FootSwitch_BPF.c
+Uses BPF to safely and robustly change the key that the device sends upon input. Credit goes to Peter Hutterer from Red Hat for the code, for the help, and for making this possible!
